@@ -1,0 +1,28 @@
+{
+    "create_channel": {
+        "params": {
+            "name": "Name of channel",
+            "icon": "Emoji"
+        },
+        "description": "Create a broadcast based channel, it generates 'channelId' in dict"
+    },
+    "create_group": {
+        "description": "Create a group wherever any one can message.",
+        "params": {
+            "name": "Name of group",
+            "icon": "Emoji"
+        }
+    },
+    "send_message": {
+        "description": "Send a message in any chat (by default, sends to current chat)",
+        "params": {
+            "community_id": "[optional] Community id to send",
+            "user_id": "[optional] User id to send",
+            "channel_id": "[optional] channel id to send",
+            "group_id": "[optional] group id to send"
+        }
+    },
+    "set_community_description": {
+        
+    }
+}
