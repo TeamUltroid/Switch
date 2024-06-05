@@ -1,4 +1,3 @@
-import os
 import logging
 from config import BOT_NAME
 
@@ -24,12 +23,10 @@ if not user_token:
 class UClient(Client):
 
     def __init__(self, user_token, **kwargs):
-        super().__init__(
-            user_token, **kwargs
-                         )
+        super().__init__(user_token, **kwargs)
 
 
-user = UClient(user_token, plugins=dict(root="plugins"))
+user: UClient = UClient(user_token, plugins=dict(root="plugins"))
 
 
 TG_BOT_TOKEN = Config.get("TG_BOT_TOKEN")
@@ -37,7 +34,7 @@ TG_BOT_TOKEN = Config.get("TG_BOT_TOKEN")
 if TG_BOT_TOKEN:
     from telethon import TelegramClient
 
-    tg_bot = TelegramClient(
+    tg_bot: TelegramClient = TelegramClient(
         "plugins/telegram/bot",
         api_id=Config.get("TG_API_ID"),
         api_hash=Config.get("TG_API_HASH"),
