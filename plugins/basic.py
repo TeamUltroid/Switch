@@ -21,7 +21,10 @@ async def on_ping(message: Message):
 @command("alive")
 async def on_alive(message: Message):
     """Check if the bot is alive."""
-    await message.delete()
+    try:
+        await message.delete()
+    except:
+        pass
     media = Config.get("VAR_ALIVE_MEDIA")
     if media:
         try:
@@ -33,7 +36,7 @@ async def on_alive(message: Message):
     response = f"""*I'm alive!*
 
 💝 *Version:* {VERSION}
-💖 *Uptime:* {parse_ms((time.time() - START_TIME)) * 1000}
+💖 *Uptime:* {parse_ms((time.time() - START_TIME) * 1000)}
 🐍 *Python:* {version_info.major}.{version_info.minor}.{version_info.micro}
 📦 *Platform:* {platform}"""
     await message.reply_text(response, media_info=media)

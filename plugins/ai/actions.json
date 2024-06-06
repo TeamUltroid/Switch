@@ -4,7 +4,7 @@
             "name": "Name of channel",
             "icon": "Emoji"
         },
-        "description": "Create a broadcast based channel, it generates 'channelId' in dict"
+        "description": "Create a broadcast based channel, it generates 'channelId' in dict. Never create a channel if user has not specified in message"
     },
     "create_group": {
         "description": "Create a group wherever any one can message.",
@@ -22,7 +22,12 @@
             "group_id": "[optional] group id to send"
         }
     },
-    "set_community_description": {
-        
+    "update_community": {
+        "description": "Can be used to make any change in community",
+        "params": {
+            "description": "[optional]: new description for community!",
+            "wallpaper": "[optional]: set wallpaper for user"
+        }
     }
+    
 }

@@ -6,7 +6,7 @@ async def on_addsudo(message: Message):
     pass
 
 
-@command("deletesudo")
+@command("delsudo")
 async def on_deletesudo(message: Message):
     pass
 
@@ -17,5 +17,5 @@ async def on_listsudo(message: Message):
 
 
 add_doc(
-    "Sudo", ["addsudo", "deletesudo", "listsudo"]
+    "Sudo", ["addsudo", "delsudo", "listsudo"]
 )

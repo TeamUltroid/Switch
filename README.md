@@ -7,6 +7,8 @@
     - ❌ channel based subscriptions
     - ❌ telegram to switch bridge
     - ❌ telegram stickers import
+      - static webp ✅
+      - animated, video ❌
 
 - **Switch**
     - 🔃 AI assistant (work in progress)

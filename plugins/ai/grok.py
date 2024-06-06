@@ -16,10 +16,12 @@ with open(ACTIONS_PATH, "r") as f:
     actions = json.load(f)
 
 SYSTEM_MESSAGE = f"""
-You are a powerful AI assistant on community messaging platform named Switch, Switch is community  first platform, with games, mini-apps and lot more for everyone. You are integrated to the userbot and can perform actions based on the user's behalf and help them in conveniently perform their tasks.
+You are a powerful AI assistant on community messaging platform named Switch, Switch is community first platform, with games, mini-apps and lot more for everyone. You are integrated to the userbot and can perform actions based on the user's behalf and help them in conveniently perform their tasks.
 
 Here are the set of actions [that can be only performed]:
+<actions>
 {actions}
+</actions>
 
 for any response, return a json response, and  use the same key names,
 add a response message for the user, informing of the action
@@ -35,35 +37,64 @@ Output response example is given below:
 ]
 }
 
-use '.attribute' to access any value from previous response,
-for example,
+<break />
+# Using response of previous actions
+use 'result[n].attribute' to access any value from previous response,
+for example, to access output of response from first message
 {
     "message": "copying previous message",
-    "actions": [{
+    "actions": [
+{"action": "create_channel",
+"name": "New channel", "icon": "❣️"},
+{
         "action": "send_message",
-        "message": ".message"
+        "message": "result[0].channelId"
     }]
 }
-"""
 
+<break />
+Every response should be json parsable and never include any other extra text.
+<break />
+Every action you choose, gets executed in the order you provide them.
+be careful with every action that you choose, as they can result in serious consequences."""
+
+print(SYSTEM_MESSAGE)
 messageBox = [
     {"role": "system", "content": SYSTEM_MESSAGE},
 ]
 
 
-def make_request(query):
-    if len(messageBox) > 20:
+async def make_request(query, m: Message = None):
+    if len(messageBox) > 200:
         messageBox.pop(1)
+    #    print(m)
+    if m:
+        if m.receiver_id:
+            query += f"---\nChat user id: {m.receiver_id}\nUser's Name: {m.user.name}"
+        else:
+            community = await user.get_community(m.community_id)
+            query += f"""---
+    Current community name: {community.name}
+    Current community id: {community.id}
+    """
     messageBox.append({"role": "user", "content": query})
     response = (
-        client.chat.completions.create(messages=messageBox, model=MODEL)
+        client.chat.completions.create(
+            messages=messageBox,
+            model=MODEL,
+            temperature=1.5,
+            max_tokens=2000,
+            seed=5555,
+        )
         .choices[0]
         .message.content
     )
     print(response)
 
     try:
-        return json.loads(response)
+        json_response = json.loads(response)
+        messageBox.append({"role": "user", "content": str(json_response)})
+        return json_response
     except Exception as er:
         print(response)
         return {"error": "Unable to get response"}
@@ -72,7 +103,6 @@ def make_request(query):
 async def performAction(action, m: Message, previousResponse: dict):
     actionName = action["action"]
     personal_chat = m.personal_chat
-    print(action, 69)
 
     if actions.get(actionName):
         for x, y in actions[actionName]["params"].items():
@@ -80,11 +110,18 @@ async def performAction(action, m: Message, previousResponse: dict):
                 return {"error": f"Missing parameter {x}"}
 
     for x, y in action.items():
-        if x != "action" and y.startswith("."):
-            attributeName = y[1:]
-            action[x] = previousResponse.get(attributeName)
-
-    print(77, action)
+        if x != "action":
+            if y.startswith("."):
+                attributeName = y[1:]
+                action[x] = previousResponse.get(attributeName)
+            if y.startswith("result["):
+                try:
+                    index = int(y.split("[")[1].split("]")[0])
+                    attributeName = y.split(".")[-1]
+                    action[x] = previousResponse.get(index, {}).get(attributeName)
+                except Exception as er:
+                    print(er)
+    print(action)
 
     if actionName == "create_channel":
         if personal_chat:
@@ -130,6 +167,4 @@ async def performAction(action, m: Message, previousResponse: dict):
         response = {"messageId": response.id}
     else:
         return
-
-    print(response)
     return response

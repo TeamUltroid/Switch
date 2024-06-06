@@ -24,7 +24,7 @@ async def on_set(message: Message):
     await message.edit_text("Variable set successfully!")
 
  
-@command("delete")
+@command("del")
 async def on_delete(message: Message):
     try:
         split = message.message.split()
@@ -44,5 +44,5 @@ async def get_keys(m: Message):
     await m.edit_text(response.strip())
 
 add_doc(
-    "Variables" , ["set", "delete"]
+    "Variables" , ["set", "del", "getkeys"]
 )

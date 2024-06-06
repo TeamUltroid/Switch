@@ -13,7 +13,12 @@ async def on_cleanchat(message: Message):
         param = mSplit[1]
     except IndexError:
         param = None
+    replied = await message.get_replied_message()
+    if replied and "all" not in mSplit:
+        await replied.delete()
+        return await message.edit_text("🗑️ Message deleted.")
     message = await message.reply_text("__Cleaning chat...__")
+    user_id = (replied or message).user_id
     delete_count = 0
     offset = 0
     while True:
@@ -31,7 +36,7 @@ async def on_cleanchat(message: Message):
             break
         mBox = []
         for msg in messages.messages:
-            if param == "all" or msg.user_id == message.app.user.id:
+            if param == "all" or msg.user_id == user_id:
 
                 if ("text" in mSplit and msg.media_info) or (
                     "media" in mSplit and not msg.media_info
@@ -75,4 +80,4 @@ async def info_command(message: Message):
     await message.edit_text(response.strip())
 
 
-add_doc("Admins", ["cleanchat", "info"])
+add_doc("Admins", ["delete", "info"])

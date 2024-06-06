@@ -1,4 +1,4 @@
-from . import command, Message
+from . import command, Message, add_doc
 from functions.tasks import run_async
 
 @run_async
@@ -24,3 +24,5 @@ async def on_ytsearch(message: Message):
             response += f"    __{result['descriptionSnippet'][0]['text']}__\n"
         response += f"    *Published on:* __{result['publishedTime']}__\n\n"
     await message.edit_text(response.strip())
+
+add_doc("Youtube", ["ytsearch"])

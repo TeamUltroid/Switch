@@ -21,7 +21,7 @@ async def copyChatMessage(m: Message):
             LOGS.exception(er)
             return await m.edit_text("Invalid chat ID.")
     chat = channel or group
-    await m.edit_text(f"Copying messages from {chat.icon} {chat.name}...")
+    await m.edit_text(f"Copying messages from {chat.icon} {chat.name}...\nIt may take some time, depending on number of messages!")
     messageBox = await getAllMessages(
         chat_id=chat.id, community_id=chat.community_id, group=bool(group)
     )
